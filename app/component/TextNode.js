@@ -9,9 +9,20 @@ function TextNode({ data, selected }) {
         selected ? "border-solid border-2 border-indigo-500/100" : ""
       } `}
     >
-      <div className="flex flex-col">
-        <div className="max-h-max px-2 py-1 text-left text-black text-xs font-bold rounded-t-md bg-teal-300">
+      {/* <div className="flex flex-col">
+        <div className="px-2 py-1 text-xs font-bold text-left text-black bg-teal-300 max-h-max rounded-t-md">
           ✉️ send message
+        </div>
+        <div className="px-3 py-2 ">
+          <div className="text-xs font-normal text-black">
+            {data.label ?? "Text Node"}
+          </div>
+        </div>
+      </div> */}
+
+      <div className="flex flex-col">
+        <div className="px-2 py-1 text-xs font-bold text-left text-black bg-teal-300 max-h-max rounded-t-md">
+          ▶️ Start
         </div>
         <div className="px-3 py-2 ">
           <div className="text-xs font-normal text-black">
@@ -23,14 +34,14 @@ function TextNode({ data, selected }) {
       <Handle
         id="a"
         type="target"
-        position={Position.Left}
+        position={Position.top}
         className="w-1 rounded-full bg-slate-500"
       />
       <Handle
         id="b"
         type="source"
-        position={Position.Right}
-        className="w-1 rounded-full bg-gray-500"
+        position={Position.Bottom}
+        className="w-1 bg-gray-500 rounded-full"
       />
     </div>
   );
