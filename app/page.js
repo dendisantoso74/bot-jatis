@@ -23,7 +23,10 @@ import "reactflow/dist/base.css";
 
 import "../tailwind.config.js";
 import Sidebar from "./component/sidebar";
-import TextNode from "./component/TextNode";
+// import TextNode from "./component/TextNode";
+import BotNode from "./component/node/BotNode.js";
+import StartNode from "./component/node/StartNode.js";
+import UserNode from "./component/node/UserNode.js";
 
 // Key for local storage
 const flowKey = "flow-key";
@@ -32,9 +35,10 @@ const flowKey = "flow-key";
 const initialNodes = [
   {
     id: "1",
-    type: "textnode",
-    data: { label: "input nodes" },
+    type: "startnode",
+    data: { label: "Halo ada yang bisa saya bantu?", title: "▶️ Start"},
     position: { x: 250, y: 5 },
+    chatType: 'init'
   },
 ];
 
@@ -47,7 +51,10 @@ const App = () => {
   // Define custom node types
   const nodeTypes = useMemo(
     () => ({
-      textnode: TextNode,
+      // textnode: TextNode,
+      botnode: BotNode,
+      usernode: UserNode,
+      startnode: StartNode,
     }),
     []
   );
@@ -59,6 +66,7 @@ const App = () => {
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
   const [selectedElements, setSelectedElements] = useState([]);
   const [nodeName, setNodeName] = useState("");
+  const [nodeTitle, setNodeTitle] = useState("");
 
   // Update nodes data when nodeName or selectedElements changes
   useEffect(() => {
@@ -69,6 +77,7 @@ const App = () => {
             node.data = {
               ...node.data,
               label: nodeName,
+              title: nodeTitle,
             };
           }
           return node;
@@ -76,13 +85,15 @@ const App = () => {
       );
     } else {
       setNodeName(""); // Clear nodeName when no node is selected
+      setNodeTitle(""); // Clear nodeName when no node is selected
     }
-  }, [nodeName, selectedElements, setNodes]);
+  }, [nodeName, nodeTitle, selectedElements, setNodes]);
 
   // Handle node click
   const onNodeClick = useCallback((event, node) => {
     setSelectedElements([node]);
     setNodeName(node.data.label);
+    setNodeTitle(node.data.title);
     setNodes((nodes) =>
       nodes.map((n) => ({
         ...n,
@@ -185,7 +196,8 @@ const App = () => {
         id: getId(),
         type,
         position,
-        data: { label: `${type}` },
+        data: { label: `${type}`, title: 'judul' },
+        chatType: 'client'
       };
 
       console.log("Node created: ", newNode);
@@ -229,7 +241,7 @@ const App = () => {
           <MiniMap zoomable pannable />
           <Panel>
             <button
-              className="px-4 py-2 m-2 font-bold text-white bg-blue-500 rounded  hover:bg-blue-700"
+              className="px-4 py-2 m-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-700"
               onClick={onSave}
             >
               save flow
@@ -244,9 +256,14 @@ const App = () => {
         </ReactFlow>
       </div>
 
+      {console.log('data flow', nodes)}
+
       <Sidebar
+        nodes={nodes}
         nodeName={nodeName}
+        nodeTitle={nodeTitle}
         setNodeName={setNodeName}
+        setNodeTitle={setNodeTitle}
         selectedNode={selectedElements[0]}
         setSelectedElements={setSelectedElements}
       />

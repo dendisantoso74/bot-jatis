@@ -2,7 +2,7 @@ import React from "react";
 import { Handle, Position } from "reactflow";
 
 //custome node
-function TextNode({ data, selected }) {
+function BotNode({ data, selected }) {
   console.log('select', data);
   return (
     <div
@@ -11,12 +11,12 @@ function TextNode({ data, selected }) {
       } `}
     >
       <div className="flex flex-col">
-        <div className="px-2 py-1 text-xs font-bold text-left text-black bg-teal-300 max-h-max rounded-t-md">
-          {data.title ?? "init title"}
+        <div className="px-2 py-1 text-xs font-bold text-left text-black bg-blue-700 max-h-max rounded-t-md">
+          {data.title ?? "Bot Chat"}
         </div>
         <div className="px-3 py-2 ">
           <div className="text-xs font-normal text-black">
-            {data.label ?? "Text Node"}
+            {data.label ?? "Bot Message"}
           </div>
         </div>
       </div>
@@ -48,4 +48,4 @@ function TextNode({ data, selected }) {
   );
 }
 
-export default TextNode;
+export default BotNode;

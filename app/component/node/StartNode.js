@@ -2,7 +2,7 @@ import React from "react";
 import { Handle, Position } from "reactflow";
 
 //custome node
-function TextNode({ data, selected }) {
+function StartNode({ data, selected }) {
   console.log('select', data);
   return (
     <div
@@ -11,7 +11,7 @@ function TextNode({ data, selected }) {
       } `}
     >
       <div className="flex flex-col">
-        <div className="px-2 py-1 text-xs font-bold text-left text-black bg-teal-300 max-h-max rounded-t-md">
+        <div className="px-2 py-1 text-xs font-bold text-left text-black bg-blue-700 max-h-max rounded-t-md">
           {data.title ?? "init title"}
         </div>
         <div className="px-3 py-2 ">
@@ -31,13 +31,7 @@ function TextNode({ data, selected }) {
           </div>
         </div>
       </div> */}
-
-      <Handle
-        id="a"
-        type="target"
-        position={Position.top}
-        className="w-1 rounded-full bg-slate-500"
-      />
+      
       <Handle
         id="b"
         type="source"
@@ -48,4 +42,4 @@ function TextNode({ data, selected }) {
   );
 }
 
-export default TextNode;
+export default StartNode;
