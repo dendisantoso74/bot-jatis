@@ -34,7 +34,7 @@ const flowKey = "flow-key";
 // Initial node setup
 const initialNodes = [
   {
-    id: "1",
+    id: "node_init",
     type: "startnode",
     data: { label: "Halo ada yang bisa saya bantu?", title: "▶️ Start"},
     position: { x: 250, y: 5 },
@@ -164,7 +164,6 @@ const App = () => {
   // Handle edge connection
   const onConnect = useCallback(
     (params) => {
-      console.log("Edge created: ", params);
       setEdges((eds) => addEdge(params, eds));
     },
     [setEdges]
@@ -200,7 +199,6 @@ const App = () => {
         chatType: 'client'
       };
 
-      console.log("Node created: ", newNode);
       setNodes((nds) => nds.concat(newNode));
     },
     [reactFlowInstance]
@@ -256,9 +254,8 @@ const App = () => {
         </ReactFlow>
       </div>
 
-      {console.log('data flow', nodes)}
-
       <Sidebar
+        edges={edges}
         nodes={nodes}
         nodeName={nodeName}
         nodeTitle={nodeTitle}

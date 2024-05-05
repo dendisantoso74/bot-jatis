@@ -9,21 +9,25 @@ export default function Sidebar({
   selectedNode,
   setSelectedElements,
   nodes,
+  edges
 }) {
   // const [title, setTitle] = useState('');
   const [openModal, setOpenModal] = useState(false);
   const [tempClientChat, setTempClientChat] = useState('');
   const [clientChat, setClientChat] = useState([]);
   const [keywordChat, setKeywordChat] = useState([{data:{label:''}}]);
-  const [serverChat, setServertChat] = useState(['selamat datang', 'menu 1/2','selamat', 'inin', 'apaa', 'wowwo']);
+  const [serverChat, setServertChat] = useState([]);
+  const [serverChatTemp, setServertChatTemp] = useState([]);
+  const [localEdges, setLocalEdges] = useState([{data:{source:''}}]);
+
 
   useEffect(() => {
-    console.log('title trnsfer', nodes);
     const botNodes = nodes.filter(node => node.type === 'startnode' || node.type === 'botnode');
     const userNodes = nodes.filter(node => node.type === 'usernode');
     setServertChat(botNodes);
     setKeywordChat(userNodes);
-  },[nodes, clientChat]);
+    setLocalEdges(edges)
+  },[nodes, edges, openModal]);
 
   const handleInputChange = (event) => {
     setNodeName(event.target.value);
@@ -52,14 +56,55 @@ export default function Sidebar({
     // console.log("masuk include", keywordChat.includes(chat), 'keyword', keywordChat, 'chat', chat)
     if (clientChat.length === 0) {
       setClientChat([...clientChat, chat])
+      setServertChatTemp([...serverChatTemp, serverChat[0]])
     }
     if (keywordChat.some(v => v.data.label === chat) && clientChat) {
       //need action 
-      setClientChat([...clientChat, chat])
+      // setClientChat([...clientChat, chat])
+      keywordChat.forEach((v) => {
+        if (v.data.label === chat) {
+          console.log("Matched keyword data:", v); // Log v.data
+          const temp = v.id
+          localEdges.forEach((edge) => {
+            if (edge.source === temp) {
+              console.log("source", edge.source, 'target', edge.target); // Log v.data
+              const answer = serverChat.find(node => node.id === edge.target);
+              console.log('answer', serverChat.find(node => node.id === edge.target));
+              setServertChatTemp([...serverChatTemp, answer])
+              setClientChat([...clientChat, chat])
+
+
+            }
+          });
+        }
+      });
+
     }
     setTempClientChat('')
-    console.log('apakah ada',clientChat);
   };
+
+  const handleCloseModal = () => {
+    setTempClientChat('')
+    setClientChat([])
+    setKeywordChat([{data:{label:''}}])
+    setServertChat([])
+    setServertChatTemp([])
+    setLocalEdges([{data:{source:''}}])
+    setOpenModal(!openModal)
+  };
+
+  const handleUserMessage = ({ type, content }) =>  {
+      // Handle user message and provide appropriate responses
+      // Example: Based on menu options, fetch data or display messages
+      if (content === 'menu 1') {
+        // Provide response for menu 1
+      } else if (content === 'menu 2') {
+        // Provide response for menu 2
+      } else {
+        // Handle other user inputs
+      }
+    }
+  
 
   const customStyles = {
     content: {
@@ -72,6 +117,10 @@ export default function Sidebar({
       borderRadius: '12px',
     },
   };
+  console.log("client chat", clientChat);
+
+  console.log("log", serverChatTemp);
+
 
   return (
     <>
@@ -138,38 +187,46 @@ export default function Sidebar({
         contentLabel="Example Modal"
         style={customStyles}
       >
+        {/* {console.log('edges', edges)} */}
         <div className="flex justify-between mb-2">
           <p className="text-xl font-bold text-black">Chatbot Simulation</p>
-          <button className="flex text-sm font-bold text-black -top-10" onClick={() => setOpenModal(false)}>✖️</button>
+          <button className="flex text-sm font-bold text-black -top-10" onClick={() => handleCloseModal()}>✖️</button>
         </div>
         <div className="mb-8 text-black">Send a message to start conversation</div>
         <div className="relative h-full overflow-auto max-h-[80vh]">
-          <div className="relative flex flex-col justify-end flex-grow px-8 py-3 text-black rounded-md bg-stone-200">
+          <div className="relative flex flex-col justify-end flex-grow pb-3 text-black rounded-md bg-stone-200">
+            <div className="bg-green-950 w-full h-14 relative mb-3 rounded-t-md px-7 flex items-center">
+              <div className="rounded-full h-10 w-10 bg-slate-500 flex items-center justify-center">
+                <span className="font-bold text-xl">CS</span>
+              </div>
+              <p className="text-white font-semibold ml-2">Coster Studio</p>
+            </div>
             
             {clientChat.map((v, i) => (
               <>
-              <div
-                  key={i}
-                  className="relative flex flex-col p-2 my-1 ml-auto text-sm bg-green-300 rounded-lg rounded-tr-none speech-bubble-right">
-                  <p className="">{v}</p>
-                  <p className="text-xs leading-none text-right text-gray-600">8:00 AM</p>
-              </div>
+                {/* chat from user */}
+                <div
+                    key={i}
+                    className="relative flex flex-col p-2 my-1 ml-auto text-sm bg-green-300 rounded-lg rounded-tr-none speech-bubble-right mx-8">
+                    <p className="">{v}</p>
+                    <p className="text-xs leading-none text-right text-gray-600 mt-1">8:00 AM</p>
+                </div>
 
-              {/* balasan chat */}
-              {i === 0 && serverChat[i] &&
-                <div key={i} className="relative flex flex-col p-2 my-1 mr-auto text-sm bg-white rounded-lg rounded-tl-none speech-bubble-left">
-                  <p>{serverChat[i].data.label}</p>
-                  <p className="text-xs leading-none text-right text-gray-600">8:00 AM</p>
-                </div>
-              }
-               {console.log('masuk ke if', i, v, 'label', keywordChat[i]?.data?.label )}
-              {v === keywordChat[i-1]?.data?.label && serverChat[i] && i > 0 &&
-                <div key={i} className="relative flex flex-col p-2 my-1 mr-auto text-sm bg-white rounded-lg rounded-tl-none speech-bubble-left">
-                  {console.log('masuk ke if', i)}
-                  <p>{serverChat[i].data.label}</p>
-                  <p className="text-xs leading-none text-right text-gray-600">8:00 AM</p>
-                </div>
-              }
+                {/* balasan chat bot firstime */}
+                {/* {i === 0 && serverChat[i] &&
+                  <div key={i} className="relative flex flex-col p-2 my-1 mr-auto text-sm bg-white rounded-lg rounded-tl-none speech-bubble-left mx-8">
+                    <p>{serverChatTemp[i]?.data.label}</p>
+                    <p className="text-xs leading-none text-right text-gray-600 mt-1">8:00 AM</p>
+                  </div>
+                } */}
+
+                {/* balasan chat bot from node*/}
+                {/* {v === keywordChat[i-1]?.data?.label && */}
+                  <div key={i} className="relative flex flex-col p-2 my-1 mr-auto text-sm bg-white rounded-lg rounded-tl-none speech-bubble-left mx-8">
+                    <p>{serverChatTemp[i].data.label}</p>
+                    <p className="text-xs leading-none text-right text-gray-600 mt-1">8:00 AM</p>
+                  </div>
+                {/* } */}
               </>
             ))}
 
@@ -180,7 +237,7 @@ export default function Sidebar({
               </div>
             ))} */}
 
-            <div className="flex justify-between w-full gap-3 mt-8">
+            <div className="flex justify-between w-full gap-3 mt-8 px-8">
               <input value={tempClientChat} placeholder="Message" className="w-full pl-2 rounded-lg" onChange={e => setTempClientChat(e.target.value)}/>
               <button onClick={() => handleSend(tempClientChat)} className="p-3 bg-green-600 rounded-lg">Send</button>
             </div>

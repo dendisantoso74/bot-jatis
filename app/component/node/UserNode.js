@@ -3,7 +3,6 @@ import { Handle, Position } from "reactflow";
 
 //custome node
 function UserNode({ data, selected }) {
-  console.log('select', data);
   return (
     <div
       className={`w-40  shadow-md rounded-md bg-white   ${
