@@ -15,7 +15,7 @@ export default function Sidebar({
   const [openModal, setOpenModal] = useState(false);
   const [tempClientChat, setTempClientChat] = useState('');
   const [clientChat, setClientChat] = useState([]);
-  const [keywordChat, setKeywordChat] = useState([{data:{label:''}}]);
+  const [keywordChat, setKeywordChat] = useState([{data:{message:''}}]);
   const [serverChat, setServertChat] = useState([]);
   const [serverChatTemp, setServertChatTemp] = useState([]);
   const [localEdges, setLocalEdges] = useState([{data:{source:''}}]);
@@ -52,17 +52,17 @@ export default function Sidebar({
   const handleSend = (chat) => {
     // if (keywordChat.includes(chat)) {
     // }
-    // keywordChat.some(v => v.data.label === "tampilkan menu");
+    // keywordChat.some(v => v.data.message === "tampilkan menu");
     // console.log("masuk include", keywordChat.includes(chat), 'keyword', keywordChat, 'chat', chat)
     if (clientChat.length === 0) {
       setClientChat([...clientChat, chat])
       setServertChatTemp([...serverChatTemp, serverChat[0]])
     }
-    if (keywordChat.some(v => v.data.label === chat) && clientChat) {
+    if (keywordChat.some(v => v.data.message === chat) && clientChat) {
       //need action 
       // setClientChat([...clientChat, chat])
       keywordChat.forEach((v) => {
-        if (v.data.label === chat) {
+        if (v.data.message === chat) {
           console.log("Matched keyword data:", v); // Log v.data
           const temp = v.id
           localEdges.forEach((edge) => {
@@ -86,25 +86,12 @@ export default function Sidebar({
   const handleCloseModal = () => {
     setTempClientChat('')
     setClientChat([])
-    setKeywordChat([{data:{label:''}}])
+    setKeywordChat([{data:{message:''}}])
     setServertChat([])
     setServertChatTemp([])
     setLocalEdges([{data:{source:''}}])
     setOpenModal(!openModal)
   };
-
-  const handleUserMessage = ({ type, content }) =>  {
-      // Handle user message and provide appropriate responses
-      // Example: Based on menu options, fetch data or display messages
-      if (content === 'menu 1') {
-        // Provide response for menu 1
-      } else if (content === 'menu 2') {
-        // Provide response for menu 2
-      } else {
-        // Handle other user inputs
-      }
-    }
-  
 
   const customStyles = {
     content: {
@@ -130,7 +117,7 @@ export default function Sidebar({
           //settings panel
           <div>
             <h3 className="mb-2 text-xl text-blue-900">Update Node</h3>
-            <label className="block mb-2 text-sm font-medium text-blue-900">
+            {/* <label className="block mb-2 text-sm font-medium text-blue-900">
               Title
             </label>
             <input
@@ -138,10 +125,10 @@ export default function Sidebar({
               className="block w-full px-3 pt-2 pb-3 text-gray-700 bg-white border border-blue-300 rounded-lg focus:outline-none focus:border-blue-500"
               value={nodeTitle}
               onChange={handleTitleChange}
-            />
+            /> */}
             
             <label className="block my-2 text-sm font-medium text-blue-900">
-              Node Name
+              Message
             </label>
             <input
               type="text"
@@ -153,7 +140,7 @@ export default function Sidebar({
               className="p-2 mt-4 text-white bg-blue-500 rounded hover:bg-blue-600"
               onClick={() => setSelectedElements([])}
             >
-              Go Back
+              Update
             </button>
           </div>
         ) : (
@@ -161,11 +148,11 @@ export default function Sidebar({
           <>
             <h3 className="mb-4 text-xl text-blue-900">Nodes Panel</h3>
             <div
-              className="flex items-center justify-center p-3 text-blue-500 transition-colors duration-200 bg-white border-2 border-blue-500 rounded cursor-move hover:bg-blue-500 hover:text-white"
+              className="flex items-center justify-center p-3 text-blue-500 transition-colors duration-200 bg-white border-2 border-teal-300 rounded cursor-move hover:bg-teal-300 hover:text-white"
               onDragStart={(event) => onDragStart(event, "usernode")}
               draggable
             >
-              Message Node
+              User Message Node
             </div>
 
             <div
@@ -215,15 +202,15 @@ export default function Sidebar({
                 {/* balasan chat bot firstime */}
                 {/* {i === 0 && serverChat[i] &&
                   <div key={i} className="relative flex flex-col p-2 my-1 mr-auto text-sm bg-white rounded-lg rounded-tl-none speech-bubble-left mx-8">
-                    <p>{serverChatTemp[i]?.data.label}</p>
+                    <p>{serverChatTemp[i]?.data.message}</p>
                     <p className="text-xs leading-none text-right text-gray-600 mt-1">8:00 AM</p>
                   </div>
                 } */}
 
                 {/* balasan chat bot from node*/}
-                {/* {v === keywordChat[i-1]?.data?.label && */}
+                {/* {v === keywordChat[i-1]?.data?.message && */}
                   <div key={i} className="relative flex flex-col p-2 my-1 mr-auto text-sm bg-white rounded-lg rounded-tl-none speech-bubble-left mx-8">
-                    <p>{serverChatTemp[i].data.label}</p>
+                    <p>{serverChatTemp[i].data.message}</p>
                     <p className="text-xs leading-none text-right text-gray-600 mt-1">8:00 AM</p>
                   </div>
                 {/* } */}

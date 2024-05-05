@@ -36,7 +36,7 @@ const initialNodes = [
   {
     id: "node_init",
     type: "startnode",
-    data: { label: "Halo ada yang bisa saya bantu?", title: "▶️ Start"},
+    data: { message: "Halo ada yang bisa saya bantu?", title: "▶️ Start"},
     position: { x: 250, y: 5 },
     chatType: 'init'
   },
@@ -45,7 +45,10 @@ const initialNodes = [
 let id = 0;
 
 // Function for generating unique IDs for nodes
-const getId = () => `node_${id++}`;
+// const randomId = `id_${Math.random().toString(36).substr(2, 9)}_${Date.now().toString(36)}`;
+// const getId = () => `node_${id++}`;
+const getId = () => `node_${Math.random().toString(36).substr(2, 9)}_${Date.now().toString(36)}`;
+
 
 const App = () => {
   // Define custom node types
@@ -76,7 +79,7 @@ const App = () => {
           if (node.id === selectedElements[0]?.id) {
             node.data = {
               ...node.data,
-              label: nodeName,
+              message: nodeName,
               title: nodeTitle,
             };
           }
@@ -92,7 +95,7 @@ const App = () => {
   // Handle node click
   const onNodeClick = useCallback((event, node) => {
     setSelectedElements([node]);
-    setNodeName(node.data.label);
+    setNodeName(node.data.message);
     setNodeTitle(node.data.title);
     setNodes((nodes) =>
       nodes.map((n) => ({
@@ -195,8 +198,7 @@ const App = () => {
         id: getId(),
         type,
         position,
-        data: { label: `${type}`, title: 'judul' },
-        chatType: 'client'
+        data: { message: 'Input message...', title: 'judul' }
       };
 
       setNodes((nds) => nds.concat(newNode));

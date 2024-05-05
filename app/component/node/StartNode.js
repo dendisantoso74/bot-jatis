@@ -15,7 +15,7 @@ function StartNode({ data, selected }) {
         </div>
         <div className="px-3 py-2 ">
           <div className="text-xs font-normal text-black">
-            {data.label ?? "Text Node"}
+            {data.message ?? "Text Node"}
           </div>
         </div>
       </div>
@@ -26,7 +26,7 @@ function StartNode({ data, selected }) {
         </div>
         <div className="px-3 py-2 ">
           <div className="text-xs font-normal text-black">
-            {data.label ?? "Text Node"}
+            {data.message ?? "Text Node"}
           </div>
         </div>
       </div> */}

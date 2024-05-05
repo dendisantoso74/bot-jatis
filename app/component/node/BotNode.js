@@ -10,12 +10,13 @@ function BotNode({ data, selected }) {
       } `}
     >
       <div className="flex flex-col">
-        <div className="px-2 py-1 text-xs font-bold text-left text-black bg-blue-700 max-h-max rounded-t-md">
-          {data.title ?? "Bot Chat"}
+        <div className="px-2 py-1 text-xs text-left text-black bg-blue-700 max-h-max rounded-t-md">
+          {/* {data.title ?? "Bot Chat"} */}
+          Balasan Chat
         </div>
         <div className="px-3 py-2 ">
           <div className="text-xs font-normal text-black">
-            {data.label ?? "Bot Message"}
+            {data.message ?? "Bot Message"}
           </div>
         </div>
       </div>
@@ -26,7 +27,7 @@ function BotNode({ data, selected }) {
         </div>
         <div className="px-3 py-2 ">
           <div className="text-xs font-normal text-black">
-            {data.label ?? "Text Node"}
+            {data.message ?? "Text Node"}
           </div>
         </div>
       </div> */}
