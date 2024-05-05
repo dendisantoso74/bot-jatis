@@ -1,5 +1,6 @@
 import React from "react";
 import { Handle, Position } from "reactflow";
+import CustomHandle from "../CutomHandle";
 
 //custome node
 function BotNode({ data, selected }) {
@@ -32,17 +33,20 @@ function BotNode({ data, selected }) {
         </div>
       </div> */}
 
-      <Handle
+      {/* <Handle
         id="a"
         type="target"
         position={Position.top}
         className="w-1 rounded-full bg-slate-500"
-      />
+      /> */}
+
+      <CustomHandle id="a" type="target" className="w-2 h-2 rounded-full bg-slate-500" position={Position.top} isConnectable={1} />
+
       <Handle
         id="b"
         type="source"
         position={Position.Bottom}
-        className="w-1 bg-gray-500 rounded-full"
+        className="w-2 h-2 bg-gray-500 rounded-full"
       />
     </div>
   );

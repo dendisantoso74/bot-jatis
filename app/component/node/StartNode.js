@@ -35,7 +35,7 @@ function StartNode({ data, selected }) {
         id="b"
         type="source"
         position={Position.Bottom}
-        className="w-1 bg-gray-500 rounded-full"
+        className="w-2 h-2 bg-gray-500 rounded-full"
       />
     </div>
   );

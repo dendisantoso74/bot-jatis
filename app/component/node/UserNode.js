@@ -1,5 +1,6 @@
 import React, { useCallback } from 'react';
 import { Handle, Position } from "reactflow";
+import CustomHandle from '../CutomHandle';
 
 //custome node
 function UserNode({ data, selected }) {
@@ -22,23 +23,28 @@ function UserNode({ data, selected }) {
         <div className="px-3 py-2 ">
           <div className="text-xs font-normal text-black">
             {data.message ?? "User Message"}
-            {/* <textarea onChange={(e) => onChange(e, data)} placeholder='Input mesage...'  className="nodrag text-black border border-gray-300 rounded-sm w-full" /> */}
+            {/* <textarea onChange={(e) => onChange(e, data)} placeholder='Input mesage...'  className="w-full text-black border border-gray-300 rounded-sm nodrag" /> */}
           </div>
         </div>
       </div>
 
-      <Handle
+      {/* <Handle
         id="a"
         type="target"
         position={Position.top}
         className="w-1 rounded-full bg-slate-500"
-      />
-      <Handle
+      /> */}
+      <CustomHandle id="a" type="target" className="w-2 h-2 rounded-full bg-slate-500" position={Position.top} isConnectable={1} />
+      <CustomHandle id="b" type="source" className="w-2 h-2 rounded-full bg-slate-500" position={Position.Bottom} isConnectable={2} />
+
+
+      {/* <Handle
         id="b"
         type="source"
         position={Position.Bottom}
         className="w-1 bg-gray-500 rounded-full"
-      />
+      /> */}
+
     </div>
   );
 }
