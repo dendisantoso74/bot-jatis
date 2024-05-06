@@ -1,17 +1,13 @@
 import React, {useEffect, useState} from "react";
 import Modal from 'react-modal';
+import Image from 'next/image';
+import send from '../../public/send-filled.svg'
 
 export default function Sidebar({
-  nodeName,
-  nodeTitle,
-  setNodeName,
-  setNodeTitle,
-  selectedNode,
-  setSelectedElements,
   nodes,
   edges
 }) {
-  // const [title, setTitle] = useState('');
+  
   const [openModal, setOpenModal] = useState(false);
   const [tempClientChat, setTempClientChat] = useState('');
   const [clientChat, setClientChat] = useState([]);
@@ -19,7 +15,6 @@ export default function Sidebar({
   const [serverChat, setServertChat] = useState([]);
   const [serverChatTemp, setServertChatTemp] = useState([]);
   const [localEdges, setLocalEdges] = useState([{data:{source:''}}]);
-
 
   useEffect(() => {
     const botNodes = nodes.filter(node => node.type === 'startnode' || node.type === 'botnode');
@@ -29,50 +24,26 @@ export default function Sidebar({
     setLocalEdges(edges)
   },[nodes, edges, openModal]);
 
-  const handleInputChange = (event) => {
-    setNodeName(event.target.value);
-  };
-
-  const handleTitleChange = (event) => {
-    setNodeTitle(event.target.value);
-  };
-
   const onDragStart = (event, nodeType) => {
     event.dataTransfer.setData("application/reactflow", nodeType);
     event.dataTransfer.effectAllowed = "move";
   };
 
-  const deleteItem = (itemToDelete) => {
-    // Buat array baru yang tidak memuat nilai yang ingin dihapus
-    const updatedItems = clientChat.filter(item => item !== itemToDelete);
-    // Perbarui state dengan array baru
-    setClientChat(updatedItems);
-  };
-
   const handleSend = (chat) => {
-    // if (keywordChat.includes(chat)) {
-    // }
-    // keywordChat.some(v => v.data.message === "tampilkan menu");
-    // console.log("masuk include", keywordChat.includes(chat), 'keyword', keywordChat, 'chat', chat)
     if (clientChat.length === 0) {
       setClientChat([...clientChat, chat])
       setServertChatTemp([...serverChatTemp, serverChat[0]])
     }
     if (keywordChat.some(v => v.data.message === chat) && clientChat) {
-      //need action 
       // setClientChat([...clientChat, chat])
       keywordChat.forEach((v) => {
         if (v.data.message === chat) {
-          console.log("Matched keyword data:", v); // Log v.data
           const temp = v.id
           localEdges.forEach((edge) => {
             if (edge.source === temp) {
-              console.log("source", edge.source, 'target', edge.target); // Log v.data
               const answer = serverChat.find(node => node.id === edge.target);
-              console.log('answer', serverChat.find(node => node.id === edge.target));
               setServertChatTemp([...serverChatTemp, answer])
               setClientChat([...clientChat, chat])
-
 
             }
           });
@@ -93,6 +64,10 @@ export default function Sidebar({
     setOpenModal(!openModal)
   };
 
+  const handleMinimizeModal = () => {
+    setOpenModal(!openModal)
+  };
+
   const customStyles = {
     content: {
       top: '50%',
@@ -104,47 +79,11 @@ export default function Sidebar({
       borderRadius: '12px',
     },
   };
-  console.log("client chat", clientChat);
-
-  console.log("log", serverChatTemp);
-
 
   return (
     <>
       <aside className="w-64 h-screen p-4 text-sm text-black bg-blue-100 border-r-2 border-blue-200">
         <button className='w-full px-4 py-2 mb-3 font-bold bg-blue-300 border shadow-sm hover:bg-blue-600 rounded-xl hover:text-white' onClick={() => setOpenModal(true)}>Simulation Chat</button>
-        {selectedNode ? (
-          //settings panel
-          <div>
-            <h3 className="mb-2 text-xl text-blue-900">Update Node</h3>
-            {/* <label className="block mb-2 text-sm font-medium text-blue-900">
-              Title
-            </label>
-            <input
-              type="text"
-              className="block w-full px-3 pt-2 pb-3 text-gray-700 bg-white border border-blue-300 rounded-lg focus:outline-none focus:border-blue-500"
-              value={nodeTitle}
-              onChange={handleTitleChange}
-            /> */}
-            
-            <label className="block my-2 text-sm font-medium text-blue-900">
-              Message
-            </label>
-            <input
-              type="text"
-              className="block w-full px-3 pt-2 pb-3 text-gray-700 bg-white border border-blue-300 rounded-lg focus:outline-none focus:border-blue-500"
-              value={nodeName}
-              onChange={handleInputChange}
-            />
-            <button
-              className="p-2 mt-4 text-white bg-blue-500 rounded hover:bg-blue-600"
-              onClick={() => setSelectedElements([])}
-            >
-              Update
-            </button>
-          </div>
-        ) : (
-          //node panel
           <>
             <h3 className="mb-4 text-xl text-blue-900">Nodes Panel</h3>
             <div
@@ -162,10 +101,8 @@ export default function Sidebar({
             >
               Bot Message Node
             </div>
-
+            <p className="mt-3 text-base"><span className="mr-1 text-lg text-red-500">*</span>Drag and drop to add user or bot message node</p>
           </>
-          
-        )}
       </aside>
 
       {/* chat simulation */}
@@ -174,19 +111,21 @@ export default function Sidebar({
         contentLabel="Example Modal"
         style={customStyles}
       >
-        {/* {console.log('edges', edges)} */}
         <div className="flex justify-between mb-2">
           <p className="text-xl font-bold text-black">Chatbot Simulation</p>
-          <button className="flex text-sm font-bold text-black -top-10" onClick={() => handleCloseModal()}>✖️</button>
+          <div className="flex">
+            <button className="flex mr-5 text-sm font-bold text-black -top-10" onClick={() => handleMinimizeModal()}>➖</button>
+            <button className="flex text-sm font-bold text-black -top-10" onClick={() => handleCloseModal()}>✖️</button>
+          </div>
         </div>
         <div className="mb-8 text-black">Send a message to start conversation</div>
         <div className="relative h-full overflow-auto max-h-[80vh]">
           <div className="relative flex flex-col justify-end flex-grow pb-3 text-black rounded-md bg-stone-200">
-            <div className="bg-green-950 w-full h-14 relative mb-3 rounded-t-md px-7 flex items-center">
-              <div className="rounded-full h-10 w-10 bg-slate-500 flex items-center justify-center">
-                <span className="font-bold text-xl">CS</span>
+            <div className="relative flex items-center w-full mb-3 bg-zinc-700 h-14 rounded-t-md px-7">
+              <div className="flex items-center justify-center w-10 h-10 rounded-full bg-cyan-200">
+                <span className="text-xl font-bold">CS</span>
               </div>
-              <p className="text-white font-semibold ml-2">Coster Studio</p>
+              <p className="ml-2 font-semibold text-white">Coster Studio</p>
             </div>
             
             {clientChat.map((v, i) => (
@@ -194,39 +133,27 @@ export default function Sidebar({
                 {/* chat from user */}
                 <div
                     key={i}
-                    className="relative flex flex-col p-2 my-1 ml-auto text-sm bg-green-300 rounded-lg rounded-tr-none speech-bubble-right mx-8">
+                    className="relative flex flex-col p-2 mx-8 my-1 ml-auto text-sm bg-green-300 rounded-lg rounded-tr-none speech-bubble-right">
                     <p className="">{v}</p>
-                    <p className="text-xs leading-none text-right text-gray-600 mt-1">8:00 AM</p>
+                    <p className="mt-1 text-xs leading-none text-right text-gray-600">8:00 AM</p>
                 </div>
 
-                {/* balasan chat bot firstime */}
-                {/* {i === 0 && serverChat[i] &&
-                  <div key={i} className="relative flex flex-col p-2 my-1 mr-auto text-sm bg-white rounded-lg rounded-tl-none speech-bubble-left mx-8">
-                    <p>{serverChatTemp[i]?.data.message}</p>
-                    <p className="text-xs leading-none text-right text-gray-600 mt-1">8:00 AM</p>
-                  </div>
-                } */}
-
                 {/* balasan chat bot from node*/}
-                {/* {v === keywordChat[i-1]?.data?.message && */}
-                  <div key={i} className="relative flex flex-col p-2 my-1 mr-auto text-sm bg-white rounded-lg rounded-tl-none speech-bubble-left mx-8">
+                  <div key={i} className="relative flex flex-col p-2 mx-8 my-1 mr-auto text-sm bg-white rounded-lg rounded-tl-none speech-bubble-left">
                     <p>{serverChatTemp[i].data.message}</p>
-                    <p className="text-xs leading-none text-right text-gray-600 mt-1">8:00 AM</p>
+                    <p className="mt-1 text-xs leading-none text-right text-gray-600">8:00 AM</p>
                   </div>
-                {/* } */}
               </>
             ))}
 
-            {/* {serverChat.map((v, i) => (
-              <div key={i} className="relative flex flex-col p-2 my-1 mr-auto text-sm bg-white rounded-lg rounded-tl-none speech-bubble-left">
-                <p>{v}</p>
-                <p className="text-xs leading-none text-right text-gray-600">8:00 AM</p>
-              </div>
-            ))} */}
-
-            <div className="flex justify-between w-full gap-3 mt-8 px-8">
-              <input value={tempClientChat} placeholder="Message" className="w-full pl-2 rounded-lg" onChange={e => setTempClientChat(e.target.value)}/>
-              <button onClick={() => handleSend(tempClientChat)} className="p-3 bg-green-600 rounded-lg">Send</button>
+            <div className="flex justify-between w-full gap-3 px-8 mt-8">
+              <input value={tempClientChat} placeholder="Message" className="w-full pl-5 rounded-3xl" onChange={e => setTempClientChat(e.target.value)}/>
+              <button onClick={() => handleSend(tempClientChat)} className="p-3 bg-green-600 rounded-full">
+                <Image
+                  src={send}
+                  alt="icon send"
+                />
+              </button>
             </div>
           </div>
         </div>

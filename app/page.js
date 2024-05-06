@@ -18,12 +18,12 @@ import ReactFlow, {
   MiniMap,
   Controls,
   Background,
+  MarkerType,
 } from "reactflow";
 import "reactflow/dist/base.css";
 
 import "../tailwind.config.js";
 import Sidebar from "./component/sidebar";
-// import TextNode from "./component/TextNode";
 import BotNode from "./component/node/BotNode.js";
 import StartNode from "./component/node/StartNode.js";
 import UserNode from "./component/node/UserNode.js";
@@ -31,24 +31,18 @@ import UserNode from "./component/node/UserNode.js";
 // Key for local storage
 const flowKey = "flow-key";
 
+// Function for generating unique IDs for nodes
+const getId = () => `node_${Math.random().toString(36).substr(2, 9)}_${Date.now().toString(36)}`;
+
 // Initial node setup
 const initialNodes = [
   {
-    id: "node_init",
+    id: `node_init_${Math.random().toString(36).substr(2, 9)}`,
     type: "startnode",
     data: { message: "Halo ada yang bisa saya bantu?", title: "▶️ Start"},
-    position: { x: 250, y: 5 },
-    chatType: 'init'
+    position: { x: 250, y: 5 }
   },
 ];
-
-let id = 0;
-
-// Function for generating unique IDs for nodes
-// const randomId = `id_${Math.random().toString(36).substr(2, 9)}_${Date.now().toString(36)}`;
-// const getId = () => `node_${id++}`;
-const getId = () => `node_${Math.random().toString(36).substr(2, 9)}_${Date.now().toString(36)}`;
-
 
 const App = () => {
   // Define custom node types
@@ -164,10 +158,22 @@ const App = () => {
     restoreFlow();
   }, [setNodes, setViewport]);
 
+  const addEndMarker = (edge) => ({
+    ...edge,
+    markerEnd: {
+      type: MarkerType.ArrowClosed,
+      width: 20,
+      height: 20,
+      color: "#b1b1b7",
+    },
+  });
+
   // Handle edge connection
   const onConnect = useCallback(
     (params) => {
-      setEdges((eds) => addEdge(params, eds));
+      if (params.sourceHandle.substr(0, 3) !== params.targetHandle.substr(0, 3)) {
+        setEdges((eds) => addEdge(addEndMarker(params), eds));
+      }
     },
     [setEdges]
   );
@@ -198,7 +204,7 @@ const App = () => {
         id: getId(),
         type,
         position,
-        data: { message: 'Input message...', title: 'judul' }
+        data: { message: '', title: 'judul' }
       };
 
       setNodes((nds) => nds.concat(newNode));
